@@ -65,5 +65,5 @@ target/
 # Created by .ignore support plugin (hsz.mobi)
 
 # repository folders which should not be sync'd
-/data/
-/results/
+/data
+/results
