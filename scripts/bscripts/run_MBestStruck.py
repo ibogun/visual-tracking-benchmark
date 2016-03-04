@@ -2,11 +2,11 @@ import subprocess
 import time
 import numpy as np
 
-from trackers.Antrack.antrack import RobStruck
+from trackers.Antrack.antrack import MStruck
 from config import *
 
 
-def run_RobStruck(seq, rp, bSaveImage):
+def run_MBestStruck(seq, rp, bSaveImage):
     x = seq.init_rect[0] - 1
     y = seq.init_rect[1] - 1
     w = seq.init_rect[2]
@@ -19,21 +19,29 @@ def run_RobStruck(seq, rp, bSaveImage):
 
     # x, y, w, h -> initial bounding box
     # seq.s_frames is a list of the images
-    features = "hogANDhist"
-    kernel = "int"
-    filter = 1
 
-    tracker = RobStruck()
-    tracker.createTracker(kernel, features, filter)
+    top_features = "hogANDhist"
+    top_kernel = "int"
+    filter=0
+    dis_features = "haar"
+    dis_kernel = "linear"
+    features = "raw"
+    kernel = "linear"
+
+    tracker = MStruck()
+    tracker.createTracker(kernel, features, filter,
+                          dis_features, dis_kernel,
+                          top_features, top_kernel)
+    tracker.setDisplay(0)
     tracker.initialize(str(seq.s_frames[0]), int(x), int(y), int(w), int(h))
     tic = time.clock()
-
     res = np.zeros((len(seq.s_frames),4))
     res[0] = [x,y,w,h]
 
     for i in range(1, len(seq.s_frames)):
         r = tracker.track(str(seq.s_frames[i]))
         res[i] = [r[0], r[1], r[2], r[3]]
+
     duration = time.clock() - tic
 
     result = dict()

@@ -28,6 +28,7 @@ def load_seq_config(seqName):
 
 def load_all_seq_configs():
     seqNames = os.listdir(SEQ_SRC)
+    seqNames.sort()
     seqNames.remove(ATTR_LIST_FILE)
     seqNames.remove(ATTR_DESC_FILE)
     seqs = []
@@ -40,6 +41,7 @@ def load_all_seq_configs():
 def make_seq_configs(loadSeqs):
     if loadSeqs == 'ALL':
         names =  os.listdir(SEQ_SRC)
+        names.sort()
         names.remove(ATTR_LIST_FILE)
         names.remove(ATTR_DESC_FILE)
     else:
@@ -62,6 +64,7 @@ def make_seq_configs(loadSeqs):
 
         imgfiles = os.listdir(imgSrc)
         imgfiles = [x for x in imgfiles if x.split('.')[1] in ['jpg', 'png']]
+        imgfiles.sort()
         nz, ext, startFrame, endFrame = get_format(name, imgfiles)
         
         attrSrc = os.path.join(src, ATTR_FILE)
@@ -109,6 +112,7 @@ def get_format(name, imgfiles):
     ext = filenames[1]
     startFrame = int(filenames[0])
     endFrame = startFrame + len(imgfiles) - 1
+
     if name == "David":
         startFrame = 300
         endFrame = 770

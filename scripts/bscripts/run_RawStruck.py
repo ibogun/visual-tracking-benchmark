@@ -6,7 +6,7 @@ from trackers.Antrack.antrack import RobStruck
 from config import *
 
 
-def run_RobStruck(seq, rp, bSaveImage):
+def run_RawStruck(seq, rp, bSaveImage):
     x = seq.init_rect[0] - 1
     y = seq.init_rect[1] - 1
     w = seq.init_rect[2]
@@ -21,7 +21,7 @@ def run_RobStruck(seq, rp, bSaveImage):
     # seq.s_frames is a list of the images
     features = "hogANDhist"
     kernel = "int"
-    filter = 1
+    filter = 0
 
     tracker = RobStruck()
     tracker.createTracker(kernel, features, filter)

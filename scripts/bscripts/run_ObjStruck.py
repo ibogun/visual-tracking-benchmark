@@ -30,12 +30,8 @@ def run_ObjStruck(seq, rp, bSaveImage):
     tracker = ObjStruck()
     tracker.createTracker(kernel, features, filter, lambda_e, lambda_s,
                           inner, inner_threshold)
-    print seq.s_frames[0]
-    tracker.initialize(str(seq.s_frames[0]), x, y, w, h)
-    #print "INIT DONE"
-    #tracker.setDisplay(1)
-
-
+    tracker.initialize(str(seq.s_frames[0]), int(x), int(y), int(w), int(h))
+    tic = time.clock()
     res = np.zeros((len(seq.s_frames),4))
     res[0] = [x,y,w,h]
 
@@ -43,9 +39,6 @@ def run_ObjStruck(seq, rp, bSaveImage):
         r = tracker.track(str(seq.s_frames[i]))
         res[i] = [r[0], r[1], r[2], r[3]]
 
-    tic = time.clock()
-    # subprocess.call(command)
-    print "Running test tracker..."
     duration = time.clock() - tic
 
     result = dict()

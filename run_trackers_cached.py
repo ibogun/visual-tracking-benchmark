@@ -9,8 +9,8 @@ from scripts import *
 def main(argv):
     t0 = time.time()
     trackers = os.listdir(TRACKER_SRC)
-    #trackers = ['RobStruck']
-    evalTypes = ['OPE', 'SRE', 'TRE']
+    #trackers = ['TEST']
+    evalTypes = ['OPE','SRE', 'TRE']
     loadSeqs = 'ALL'
     seqs = []
     try:
@@ -151,6 +151,14 @@ def run_trackers(trackers, seqs, evalType, shiftTypeSet):
                 sys.exit(1)
             seqResults = []
             seqLen = len(subSeqs)
+
+            tSrc = RESULT_SRC.format(evalType) + t
+            fileName = tSrc + '/{0}.json'.format(s.name)
+
+            if os.path.exists(fileName):
+                 print fileName, " exists ", " ...skipping"
+                 continue
+
             for idx in range(seqLen):
                 print '{0}_{1}, {2}_{3}:{4}/{5} - {6}'.format(
                     idxTrk + 1, t, idxSeq + 1, s.name, idx + 1, seqLen, \
@@ -181,8 +189,12 @@ def run_trackers(trackers, seqs, evalType, shiftTypeSet):
 
                 if evalType == 'SRE':
                     res['shiftType'] = shiftTypeSet[idx]
+
                 seqResults.append(res)
-            #end for subseqs
+                #end for subseqs
+            evalResult, attrList = butil.calc_result_single_sequece(t, s,seqResults,evalType=evalType)
+            butil.save_results_one_sequence(t, evalResult, fileName, evalType)
+
 
             trackerResults[t].append(seqResults)
         #end for tracker

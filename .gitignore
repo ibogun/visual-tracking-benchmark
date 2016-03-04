@@ -67,3 +67,7 @@ target/
 # repository folders which should not be sync'd
 /data
 /results
+
+# C++ libraries
+*.so
+*.dylib

@@ -60,33 +60,6 @@ def main(argv):
                     sys.exit(1)
         trackerResults = run_trackers(
             trackers, seqs, evalType, shiftTypeSet)
-        seqNames = [s.name for s in seqs]
-        for tracker in trackers:
-            results = trackerResults[tracker]
-            if len(results) > 0:
-                evalResults, attrList = butil.calc_result(tracker,
-                    seqs, results, evalType)
-                print "Result of Sequences\t -- '{0}'".format(tracker)
-                for seq in seqs:
-                    try:
-                        print '\t\'{0}\'{1}'.format(
-                            seq.name, " "*(12 - len(seq.name))),
-                        print "\taveCoverage : {0:.3f}%".format(
-                            sum(seq.aveCoverage)/len(seq.aveCoverage) * 100),
-                        print "\taveErrCenter : {0:.3f}".format(
-                            sum(seq.aveErrCenter)/len(seq.aveErrCenter))
-                    except:
-                        print '\t\'{0}\'  ERROR!!'.format(seq.name)
-
-                print "Result of attributes\t -- '{0}'".format(tracker)
-                for attr in attrList:
-                    print "\t\'{0}\'".format(attr.name),
-                    print "\toverlap : {0:02.1f}%".format(attr.overlap),
-                    print "\tfailures : {0:.1f}".format(attr.error)
-
-                if SAVE_RESULT : 
-                    butil.save_results(tracker, evalResults, attrList, 
-                        seqNames, evalType)
 
     t1 = time.time()
 
@@ -147,6 +120,14 @@ def runParallelTrackersRun(trackers, tmpRes_path, seqs, evalType, shiftTypeSet, 
             sys.exit(1)
         seqResults = []
         seqLen = len(subSeqs)
+
+        tSrc = RESULT_SRC.format(evalType) + t
+        fileName = tSrc + '/{0}.json'.format(s.name)
+
+        if os.path.exists(fileName):
+            print fileName, " exists ", " ...skipping"
+            continue
+
         for idx in range(seqLen):
             print '{0}_{1}, {2}_{3}:{4}/{5} - {6}'.format(
                 idxTrk + 1, t, idxSeq + 1, s.name, idx + 1, seqLen, \
@@ -178,6 +159,8 @@ def runParallelTrackersRun(trackers, tmpRes_path, seqs, evalType, shiftTypeSet, 
                 res['shiftType'] = shiftTypeSet[idx]
             seqResults.append(res)
             #end for subseqs
+        evalResult, attrList = butil.calc_result_single_sequece(t, s,seqResults,evalType=evalType)
+        butil.save_results_one_sequence(t, evalResult, fileName, evalType)
 
         trackerResults[t].append(seqResults)
     return trackerResults
@@ -217,19 +200,6 @@ def run_trackers(trackers, seqs, evalType, shiftTypeSet):
                                                           itertools.repeat(seqs),
                                                           itertools.repeat(evalType),
                                                           itertools.repeat(shiftTypeSet), idxSequences))
-    #for idxSeq in range(numSeq):
-    # res is a list of dict with sequences
-    trackerResults = dict((t, list()) for t in trackers)
-    for i in range(0,len(res)):
-        dictWithResults = res[i]
-        for t in trackers:
-            r = dictWithResults[t]
-            r = r[0]
-            #r = r[0]
-            trackerResults[t].append(r)
-
-
-    return trackerResults
 
 if __name__ == "__main__":
     main(sys.argv[1:])

@@ -88,6 +88,6 @@ def calc_rect_int(A, B):
             * max(0, min(topA[i], topB[i]) - max(bottomA[i], bottomB[i])+1))
         areaA = A[i][2] * A[i][3]
         areaB = B[i][2] * B[i][3]
-        overlap.append(tmp/float(areaA+areaB-tmp))
+        overlap.append(tmp/float(max(areaA+areaB-tmp,1)))
 
     return overlap

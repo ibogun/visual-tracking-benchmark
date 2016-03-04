@@ -24,6 +24,17 @@ def save_results(tracker, resultList, attrList, seqNames, evalType):
         attrFile.write(string)
         attrFile.close()
 
+def save_results_one_sequence(tracker, result, fileName, evalType):
+    tSrc = RESULT_SRC.format(evalType) + tracker
+    if not os.path.exists(tSrc):
+        os.makedirs(tSrc)
+
+    string = json.dumps(result, default=lambda o : o.__dict__)
+    resFile = open(fileName, 'wb')
+    resFile.write(string)
+    resFile.close()
+
+
 def load_results(evalType):
     resultSRC = RESULT_SRC.format(evalType)
     trackers = os.listdir(resultSRC)
