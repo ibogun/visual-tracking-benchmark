@@ -6,7 +6,7 @@ from trackers.Antrack.antrack import MStruck
 from config import *
 
 
-def run_MBestStruck(seq, rp, bSaveImage):
+def run_MBestStruckDeep(seq, rp, bSaveImage):
     x = seq.init_rect[0] - 1
     y = seq.init_rect[1] - 1
     w = seq.init_rect[2]
@@ -23,18 +23,20 @@ def run_MBestStruck(seq, rp, bSaveImage):
     top_features = "deep"
     top_kernel = "linear"
     filter=0
-    dis_features = "haar"
+    dis_features = "hogANDhist"
     dis_kernel = "linear"
     features = "hogANDhist"
     kernel = "int"
 
     tracker = MStruck()
-
+    straddling = 0.4
+    edgeness = 0.4
     dataFolder = '/udrive/student/ibogun2010/Research/Code/DeepAntrack/data/'
-
+    #dataFolder = '/Users/Ivan/Code/Tracking/DeepAntrack/data/'
     M = 64;
+    l = 0.2;
     B_top = 100;
-    B_bottom = 10;
+    B_bottom = 100;
     tracker.deepFeatureParams(dataFolder)
     tracker.createTracker(kernel, features, filter,
                           dis_features, dis_kernel,
@@ -42,10 +44,12 @@ def run_MBestStruck(seq, rp, bSaveImage):
 
 
     tracker.setM(M);
+    tracker.setLambda(l);
     tracker.setTopBudget(B_top);
     tracker.setBottomBudget(B_bottom);
     tracker.setDisplay(0)
     tracker.initialize(str(seq.s_frames[0]), int(x), int(y), int(w), int(h))
+    tracker.setObjectnessParams(straddling, edgeness)
     tic = time.clock()
     res = np.zeros((len(seq.s_frames),4))
     res[0] = [x,y,w,h]

@@ -6,7 +6,7 @@ from trackers.Antrack.antrack import MStruck
 from config import *
 
 
-def run_MBestStruck(seq, rp, bSaveImage):
+def run_M64BestStruck(seq, rp, bSaveImage):
     x = seq.init_rect[0] - 1
     y = seq.init_rect[1] - 1
     w = seq.init_rect[2]

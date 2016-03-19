@@ -6,7 +6,7 @@ from trackers.Antrack.antrack import MStruck
 from config import *
 
 
-def run_MBestStruck(seq, rp, bSaveImage):
+def run_M128L0_05BestStruck(seq, rp, bSaveImage):
     x = seq.init_rect[0] - 1
     y = seq.init_rect[1] - 1
     w = seq.init_rect[2]
@@ -20,21 +20,22 @@ def run_MBestStruck(seq, rp, bSaveImage):
     # x, y, w, h -> initial bounding box
     # seq.s_frames is a list of the images
 
-    top_features = "deep"
-    top_kernel = "linear"
+    top_features = "hogANDhist"
+    top_kernel = "int"
     filter=0
-    dis_features = "haar"
+    dis_features = "hog"
     dis_kernel = "linear"
-    features = "hogANDhist"
+    features = "hog"
     kernel = "int"
 
     tracker = MStruck()
 
     dataFolder = '/udrive/student/ibogun2010/Research/Code/DeepAntrack/data/'
 
-    M = 64;
+    M = 128;
+    l = 0.05;
     B_top = 100;
-    B_bottom = 10;
+    B_bottom = 100;
     tracker.deepFeatureParams(dataFolder)
     tracker.createTracker(kernel, features, filter,
                           dis_features, dis_kernel,
@@ -42,6 +43,7 @@ def run_MBestStruck(seq, rp, bSaveImage):
 
 
     tracker.setM(M);
+    tracker.setLambda(l);
     tracker.setTopBudget(B_top);
     tracker.setBottomBudget(B_bottom);
     tracker.setDisplay(0)

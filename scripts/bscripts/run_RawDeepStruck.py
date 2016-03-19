@@ -2,11 +2,11 @@ import subprocess
 import time
 import numpy as np
 
-from trackers.Antrack.antrack import MStruck
+from trackers.Antrack.antrack import RobStruck
 from config import *
 
 
-def run_MBestStruck(seq, rp, bSaveImage):
+def run_RawDeepStruck(seq, rp, bSaveImage):
     x = seq.init_rect[0] - 1
     y = seq.init_rect[1] - 1
     w = seq.init_rect[2]
@@ -19,41 +19,34 @@ def run_MBestStruck(seq, rp, bSaveImage):
 
     # x, y, w, h -> initial bounding box
     # seq.s_frames is a list of the images
+    features = "deep"
+    kernel = "linear"
+    filter = 0
 
-    top_features = "deep"
-    top_kernel = "linear"
-    filter=0
-    dis_features = "haar"
-    dis_kernel = "linear"
-    features = "hogANDhist"
-    kernel = "int"
+    nRadial = 5;
+    nAngular = 16;
 
-    tracker = MStruck()
+    tracker = RobStruck()
 
     dataFolder = '/udrive/student/ibogun2010/Research/Code/DeepAntrack/data/'
-
-    M = 64;
-    B_top = 100;
-    B_bottom = 10;
+    #dataFolder = "/Users/Ivan/Code/Tracking/DeepAntrack/data/"
     tracker.deepFeatureParams(dataFolder)
-    tracker.createTracker(kernel, features, filter,
-                          dis_features, dis_kernel,
-                          top_features, top_kernel)
-
-
-    tracker.setM(M);
-    tracker.setTopBudget(B_top);
-    tracker.setBottomBudget(B_bottom);
-    tracker.setDisplay(0)
+    tracker.createTracker(kernel, features, filter)
+    tracker.setLocationSamplerParameters(nRadial, nAngular)
+    print str(seq.s_frames[0])
     tracker.initialize(str(seq.s_frames[0]), int(x), int(y), int(w), int(h))
+
+
+    tracker.setDisplay(0)
     tic = time.clock()
+
     res = np.zeros((len(seq.s_frames),4))
     res[0] = [x,y,w,h]
 
     for i in range(1, len(seq.s_frames)):
+        print i, " / ", len(seq.s_frames)
         r = tracker.track(str(seq.s_frames[i]))
         res[i] = [r[0], r[1], r[2], r[3]]
-
     duration = time.clock() - tic
 
     result = dict()
