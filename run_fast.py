@@ -16,7 +16,7 @@ def main(argv):
     loadSeqs = 'ALL'
     seqs = []
 
-    proc = 48
+    proc = 16
 
     try:
         opts, args = getopt.getopt(argv, "ht:e:s:p:",["tracker=","evaltype="
@@ -63,6 +63,7 @@ def main(argv):
                 except:
                     print 'Cannot load sequence \'{0}\''.format(seqName)
                     sys.exit(1)
+
         trackerResults = run_trackers(
             trackers, seqs, evalType, shiftTypeSet, proc=proc)
 
@@ -201,9 +202,17 @@ def run_trackers(trackers, seqs, evalType, shiftTypeSet, proc=48):
         subSeqs, subAnno = butil.split_seq_TRE(s, numSeg, rect_anno)
         s.subAnno = subAnno
 
+    smallSeqsNames=['Biker', 'Bird2', 'Dancer', 'Dancer2', 'Deer', 'DragonBaby',
+                    'Human8','Ironman','Jump','KiteSurf','Man','MotorRolling','MountainBike','Skater','Skiing','Trans']
+    smallSeqs=list()
+    for s in seqs:
+        if s.name in smallSeqsNames:
+            smallSeqs.append(s)
+
+    idxSequences = range(len(smallSeqs))
     res = p.map(runParallelTrackersRunOne, itertools.izip(itertools.repeat(trackers),
                                                           itertools.repeat(tmpRes_path),
-                                                          itertools.repeat(seqs),
+                                                          itertools.repeat(smallSeqs),
                                                           itertools.repeat(evalType),
                                                           itertools.repeat(shiftTypeSet), idxSequences))
 
