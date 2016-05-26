@@ -202,7 +202,7 @@ def run_trackers(trackers, seqs, evalType, shiftTypeSet, proc=48):
         subSeqs, subAnno = butil.split_seq_TRE(s, numSeg, rect_anno)
         s.subAnno = subAnno
 
-    smallSeqsNames=['Biker', 'Bird2', 'Dancer2', 'Deer', 'DragonBaby',
+    smallSeqsNames=['Biker', 'Bird2','Dancer', 'Dancer2', 'Deer', 'DragonBaby',
                     'Human8','Ironman','Jump','KiteSurf','Man','MotorRolling','Football1','Skater','Skiing','Trans']
     smallSeqs=list()
     for s in seqs:

@@ -48,8 +48,8 @@ class DeepFeatureExtractor(object):
 
         :param imageFile: Image path
         """
-        self.net.blobs['data'].data[imageNumberInQueue] = self.transformer.preprocess('data', caffe.io.load_image(imageFile))
-        imageNumberInQueue = imageNumberInQueue + 1
+        self.net.blobs['data'].data[self.imageNumberInQueue] = self.transformer.preprocess('data', caffe.io.load_image(imageFile))
+        self.imageNumberInQueue = self.imageNumberInQueue + 1
 
     def transoformLoadedImage(self, image):
         """Perform image transformation to make the data right size and shape
@@ -85,10 +85,11 @@ class DeepFeatureExtractor(object):
         """
         self.imageNumberInQueue = 0
         out = self.net.forward()
-        return self.net.blobs[layer].data
+        return self.net.blobs[layer].data.copy()
 
 def main():
     dataFolder = '/Users/Ivan/Code/Tracking/DeepAntrack/data/'
+    dataFolder = '/udrive/student/ibogun2010/Research/Code/DeepAntrack/data/';
     protoFile = dataFolder + 'deploy.prototxt'
     weightFile = dataFolder +'bvlc_reference_caffenet.caffemodel'
     meanFile = dataFolder + 'ilsvrc_2012_mean.npy'
@@ -96,15 +97,26 @@ def main():
     deep = DeepFeatureExtractor(protoFile_ = protoFile, weightFile_ = weightFile,
                                 meanFile_ = meanFile)
     deep.load()
-    deep.setComputationMode('cpu')
+    deep.setComputationMode('gpu')
 
-    imageFile = '/Users/Ivan/Code/deep/caffe/examples/images/cat.jpg'
-
-    deep.transform(imageFile)
-    features = deep.extractFeatures(layer='fc7')
-    print features[0]
-    print type(features)
-    print features[0].shape
+    imgFolder = '/udrive/student/ibogun2010/Research/Code/Antrack/python/visual-tracking-benchmark/data/Doll/img/';
+    
+    #imageFile = '/Users/Ivan/Code/deep/caffe/examples/images/cat.jpg'
+    miniBatch = 0
+    maxBatch = 743
+    deep.setBatchSize(maxBatch)
+    for j in range(0, 50):
+        for i in range(1000,3873):
+            imageFile = imgFolder +str(i)+'.jpg'
+            print j, i
+            deep.transform(imageFile)
+            miniBatch = miniBatch + 1
+            if miniBatch >= maxBatch:
+                features = deep.extractFeatures(layer='fc7')
+                miniBatch = 0
+    #print features[0]
+    #print type(features)
+    #print features[0].shape
 
 
 
