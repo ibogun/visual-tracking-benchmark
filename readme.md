@@ -1,6 +1,6 @@
 
 
-Wu. et al (2013), Wu. et al (2015) tracking benchmark
+Antrack evaluation on Wu. et al (2013), Wu. et al (2015) tracking benchmark
 ===================================
 See original [README](https://github.com/jwlim/tracker_benchmark). Provides functions to run tracker evaluation in parallel.
 
