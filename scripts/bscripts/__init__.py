@@ -20,10 +20,14 @@ from run_SMS import *
 from run_Struck import *
 from run_TLD import *
 from run_TEST import *
-from run_RobStruck import *
-from run_RawDeepStruck import *
-from run_ObjStruck import *
-from run_ObjStruck_e0_5 import *
-from run_MBestStruckGauss import *
-from run_MBestStruckDeep import *
+try:
+    from run_RobStruck import *
+    from run_RawDeepStruck import *
+    from run_ObjStruck import *
+    from run_ObjStruck_e0_5 import *
+    from run_MBestStruckGauss import *
+    from run_MBestStruckDeep import *
+except ImportError:
+    print "Couldn't import antrack module. Antrack-based trackers are not avaliable. Compile antrack first."
+
 #from run_DeepStruck import *
